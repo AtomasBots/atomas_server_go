@@ -9,7 +9,7 @@ import (
 func TestShouldReturnNewGameWithItsUUID(t *testing.T) {
 	assert := assert.New(t)
 	recorder := httptest.NewRecorder()
-	CreateCreateGameHandler(nonRandomUUID, nonRandomElement)(recorder, nil)
+	CreateCreateGameHandler(map[string]GameDTO{}, nonRandomUUID, nonRandomElement)(recorder, nil)
 	assert.That(recorder.Body.String()).IsEqualTo(ToJsonString(NewGame("uuid", nonRandomElement)))
 }
 
@@ -36,4 +36,12 @@ func elementsFromSlice(slice []int) func(int) int {
 		i++
 		return slice[i]
 	}
+}
+
+func TestShouldSaveToMap(t *testing.T) {
+	assert := assert.New(t)
+	recorder := httptest.NewRecorder()
+	status := map[string]GameDTO{}
+	CreateCreateGameHandler(status, nonRandomUUID, nonRandomElement)(recorder, nil)
+	assert.That(status["uuid"]).IsEqualTo(NewGame("uuid", nonRandomElement))
 }

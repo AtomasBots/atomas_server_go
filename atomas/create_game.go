@@ -5,9 +5,12 @@ import (
 	"fmt"
 )
 
-func CreateCreateGameHandler(nextUUID func() string, randomElement func(int) int) func(http.ResponseWriter, *http.Request) {
+func CreateCreateGameHandler(games map[string]GameDTO, nextUUID func() string, randomElement func(int) int) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, ToJsonString(NewGame(nextUUID(), randomElement)))
+		uuid := nextUUID()
+		newGame := NewGame(uuid, randomElement)
+		games[uuid] = newGame
+		fmt.Fprint(w, ToJsonString(newGame))
 	}
 }
 
