@@ -15,8 +15,12 @@ func nextUUID() string {
 	return uuid.String()
 }
 
+func elementGenerator(_ int) int {
+	return 4
+}
+
 func main() {
-	http.HandleFunc("/new_game", atomas.CreateCreateGameHandler(nextUUID))
+	http.HandleFunc("/new_game", atomas.CreateCreateGameHandler(nextUUID, elementGenerator))
 	port := os.Args[1]
 	log.Fatal(http.ListenAndServe(port, nil))
 }
