@@ -21,7 +21,7 @@ func elementGenerator(_ int) int {
 
 func main() {
 	http.HandleFunc("/new_game", atomas.CreateCreateGameHandler(nextUUID, elementGenerator))
-	http.HandleFunc("/game/", atomas.CreateGetGameHandler())
+	http.HandleFunc("/game/", atomas.CreateGetGameHandler(map[string]atomas.GameDTO))
 	port := os.Args[1]
 	log.Fatal(http.ListenAndServe(port, nil))
 }
