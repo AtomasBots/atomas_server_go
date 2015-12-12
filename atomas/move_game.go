@@ -28,11 +28,17 @@ func CreateMoveHandler(games map[string]GameDTO, randomElement func(int) int) fu
 }
 
 func Move(game GameDTO, moveTo int, next int) GameDTO {
+	newBoard := append(game.Board[:moveTo], append([]int{game.Next}, game.Board[moveTo:]...)...)
+	scoreForMove, newBoard := EvaluateBoard(newBoard)
 	return GameDTO{
 		Id:game.Id,
-		Board:append(game.Board[:moveTo], append([]int{game.Next}, game.Board[moveTo:]...)...),
+		Board:newBoard,
 		Next:next,
 		Round:game.Round + 1,
-		Score:game.Score,
+		Score:game.Score + scoreForMove,
 	}
+}
+
+func EvaluateBoard(board []int) (int, []int) {
+	return 0, board
 }
