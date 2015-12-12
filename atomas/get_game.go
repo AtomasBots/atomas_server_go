@@ -9,6 +9,11 @@ func CreateGetGameHandler(games map[string]GameDTO) func(http.ResponseWriter, *h
 	return func(w http.ResponseWriter, r *http.Request) {
 		path := strings.Split(r.URL.Path, "/")
 		gameId := path[len(path) - 1]
-		fmt.Fprint(w, ToJsonString(games[gameId]))
+		game := games[gameId]
+		if (game.Id == gameId) {
+			fmt.Fprint(w, ToJsonString(game))
+		}else {
+			http.NotFound(w, r)
+		}
 	}
 }
