@@ -1,15 +1,17 @@
 package atomas
 
 func EvaluateBoard(board []int) (int, []int) {
+	score := 0
 	for index, element := range board {
 		if element == 0 {
 			if (isSurroundingSame(board, index)) {
+				score += board[(index + 1) % len(board)] * 2
 				board[index] = board[(index + 1) % len(board)] + 1
 				board = Remove(board, index - 1, index + 1)
 			}
 		}
 	}
-	return 0, board
+	return score, board
 }
 
 func Remove(board []int, indexes ... int) []int {

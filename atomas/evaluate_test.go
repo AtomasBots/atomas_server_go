@@ -13,13 +13,15 @@ func TestShouldNotChangeBoardWithoutSpecialElements(t *testing.T) {
 
 func TestShouldChangeBoardWhenPlusIsSurroundedBySameElements(t *testing.T) {
 	assert := assert.New(t)
-	_, board := EvaluateBoard([]int{1, 0, 1})
+	score, board := EvaluateBoard([]int{1, 0, 1})
+	assert.That(score).IsEqualTo(2)
 	assert.That(board).IsEqualTo([]int{2})
 }
 
 func TestShouldSumElementsCorrectly(t *testing.T) {
 	assert := assert.New(t)
-	_, board := EvaluateBoard([]int{2, 0, 2})
+	score, board := EvaluateBoard([]int{2, 0, 2})
+	assert.That(score).IsEqualTo(4)
 	assert.That(board).IsEqualTo([]int{3})
 }
 
