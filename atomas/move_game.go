@@ -38,7 +38,3 @@ func Move(game GameDTO, moveTo int, next int) GameDTO {
 		Score:game.Score + scoreForMove,
 	}
 }
-
-func EvaluateBoard(board []int) (int, []int) {
-	return 0, board
-}
