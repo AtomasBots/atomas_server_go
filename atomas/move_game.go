@@ -17,9 +17,13 @@ func CreateMoveHandler(games map[string]GameDTO, randomElement func(int) int) fu
 			if (err != nil) {
 				http.Error(w, "Bad request", 502)
 			}else {
-				afterMove := Move(game, moveToInt, randomElement(game.Round))
-				games[gameId] = afterMove
-				fmt.Fprint(w, ToJsonString(afterMove))
+				if (game.Next == nil) {
+					http.Error(w, "Bad request", 502)
+				}else {
+					afterMove := Move(game, moveToInt, randomElement(game.Round))
+					games[gameId] = afterMove
+					fmt.Fprint(w, ToJsonString(afterMove))
+				}
 			}
 		}else {
 			http.NotFound(w, r)
@@ -30,6 +34,9 @@ func CreateMoveHandler(games map[string]GameDTO, randomElement func(int) int) fu
 func Move(game GameDTO, moveTo int, next int) GameDTO {
 	newBoard := append(game.Board[:moveTo], append([]int{game.Next}, game.Board[moveTo:]...)...)
 	scoreForMove, newBoard := EvaluateBoard(newBoard)
+	if (len(newBoard) > 18) {
+		next = nil
+	}
 	return GameDTO{
 		Id:game.Id,
 		Board:newBoard,
