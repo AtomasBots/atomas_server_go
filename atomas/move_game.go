@@ -17,7 +17,7 @@ func CreateMoveHandler(games map[string]GameDTO, randomElement func(int) int) fu
 
 func handleMove(w http.ResponseWriter, r *http.Request, games map[string]GameDTO, randomElement func(int) int) {
 	game, err := findGame(r, games)
-	if (err) {
+	if (err != nil) {
 		http.Error(w, err.Error(), 404)
 	} else {
 		moveTo, err := extractMoveTo(r)
@@ -27,7 +27,7 @@ func handleMove(w http.ResponseWriter, r *http.Request, games map[string]GameDTO
 			if (game.Next == END_OF_GAME) {
 				http.Error(w, "Game over", 502)
 			} else {
-				afterMove := Move(game, moveTo, randomElement(game.Round))
+				afterMove := Move(*game, moveTo, randomElement(game.Round))
 				games[game.Id] = afterMove
 				fmt.Fprint(w, ToJsonString(afterMove))
 			}
