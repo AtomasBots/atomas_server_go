@@ -2,7 +2,7 @@ package main
 import (
 	"net/http"
 	"log"
-	"github.com/OrdonTeam/atomas/atomas"
+	"github.com/AtomasBots/atomas_server_go/atomas"
 	"github.com/nu7hatch/gouuid"
 	"os"
 	"math/rand"
