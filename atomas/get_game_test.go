@@ -9,7 +9,7 @@ import (
 
 func TestShouldReturnGameFromStatus(t *testing.T) {
 	assert := assert.New(t)
-	game := NewGame("uuid", nonRandomElement)
+	game := NewGame("uuid", "", nonRandomElement)
 	recorder := httptest.NewRecorder()
 	CreateGetGameHandler(map[string]GameDTO{"uuid": game})(recorder, request())
 	assert.That(recorder.Body.String()).IsEqualTo(ToJsonString(game))
