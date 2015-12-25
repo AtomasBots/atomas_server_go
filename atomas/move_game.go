@@ -60,6 +60,7 @@ func Move(game GameDTO, moveTo int, next int) GameDTO {
 	}
 	return GameDTO{
 		Id:game.Id,
+		Ip:game.Ip,
 		Board:newBoard,
 		Next:next,
 		Round:game.Round + 1,
