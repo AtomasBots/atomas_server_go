@@ -61,3 +61,9 @@ func TestShouldSeeBoardAsLoopButCountElementsOnlyOnce(t *testing.T) {
 	_, board := EvaluateBoard([]int{1, PLUS_SIGN})
 	assert.That(board).IsEqualTo([]int{1, PLUS_SIGN})
 }
+
+func TestShouldMergeElementsButLeftNonMatching(t *testing.T) {
+	assert := assert.New(t)
+	_, board := EvaluateBoard([]int{1, 2, 3, 4, PLUS_SIGN, 4, 3, 2})
+	assert.That(board).IsEqualTo([]int{1, 7})
+}
