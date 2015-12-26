@@ -1,41 +1,78 @@
 package atomas
+import (
+	"container/list"
+)
 
 const (
 	PLUS_SIGN  int = iota
 )
 
-func EvaluateBoard(board []int) (int, []int) {
+func EvaluateBoard(arrayBoard []int) (int, []int) {
 	score := 0
-	for index, element := range board {
-		if element == PLUS_SIGN {
-			if (isSurroundingSame(board, index)) {
-				score += board[(index + 1) % len(board)] * 2
-				board[index] = board[(index + 1) % len(board)] + 1
-				board = Remove(board, index - 1, index + 1)
+	board := toList(arrayBoard)
+	for e := board.Front(); e != nil; e = e.Next() {
+		if e.Value == PLUS_SIGN {
+			if (isSurroundingSame(board, e)) {
+				score += nextWithLoop(board, e).Value.(int) * 2
+				e.Value = nextWithLoop(board, e).Value.(int) + 1
+				board = removeNeighbours(board, e)
 			}
 		}
 	}
-	return score, board
+	return score, toArray(board)
 }
-
-func Remove(board []int, indexes ... int) []int {
-	if (len(indexes) == 0 ) {
-		return board
-	}else {
-		indexToRemove := (indexes[0] % len(board) + len(board)) % len(board)
-		return Remove(append(board[:indexToRemove], board[indexToRemove + 1:]...), decreaseIndexes(indexes[1:], indexToRemove)...)
-	}
-}
-
-func decreaseIndexes(indexes []int, threshold int) []int {
-	for index, value := range indexes {
-		if (indexes[index] > threshold) {
-			indexes[index] = value - 1
+func removeNeighbours(board *list.List, element *list.Element) *list.List {
+	newBoard := list.New()
+	for e := board.Front(); e != nil; e = e.Next() {
+		if (e != prevWithLoop(board, element) && e != nextWithLoop(board, element)) {
+			newBoard.PushBack(e.Value.(int))
 		}
 	}
-	return indexes
+	return newBoard
 }
 
-func isSurroundingSame(board []int, index int) bool {
-	return board[((index - 1) % len(board) + len(board)) % len(board)] == board[(index + 1) % len(board)]
+func nextWithLoop(board *list.List, element *list.Element) *list.Element {
+	if (element.Next() != nil ) {
+		return element.Next()
+	}else {
+		return board.Front()
+	}
+}
+
+func prevWithLoop(board *list.List, element *list.Element) *list.Element {
+	if (element.Prev() != nil ) {
+		return element.Prev()
+	}else {
+		return board.Back()
+	}
+}
+
+func isSurroundingSame(board *list.List, element *list.Element) bool {
+	return nextWithLoop(board, element).Value == prevWithLoop(board, element).Value
+}
+
+func toList(board []int) *list.List {
+	result := list.New()
+	for _, element := range board {
+		result.PushBack(int(element))
+	}
+	return result
+}
+
+func toArray(board *list.List) []int {
+	array := make([]int, size(board))
+	i := 0
+	for e := board.Front(); e != nil; e = e.Next() {
+		array[i] = e.Value.(int)
+		i += 1
+	}
+	return array
+}
+
+func size(list *list.List) int {
+	count := 0
+	for e := list.Front(); e != nil; e = e.Next() {
+		count += 1
+	}
+	return count
 }
