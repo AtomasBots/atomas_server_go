@@ -23,7 +23,7 @@ func EvaluateBoard(arrayBoard []int) (int, []int) {
 func combineElements(board *list.List, element *list.Element, multiplier int) (int, int, *list.List) {
 	score := 0
 	var newAccElement *list.Element = nil
-	if (isSurroundingSame(board, element)) {
+	if (isSurroundingSame(board, element) && size(board) > 2) {
 		score += nextWithLoop(board, element).Value.(int) * 2
 		element.Value = int(math.Max(float64(nextWithLoop(board, element).Value.(int)), float64(element.Value.(int)))) + 1
 		board, newAccElement = removeNeighbours(board, element)

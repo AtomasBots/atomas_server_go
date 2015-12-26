@@ -56,15 +56,8 @@ func TestShouldSeeBoardAsLoop2(t *testing.T) {
 	assert.That(board).IsEqualTo([]int{2})
 }
 
-//func TestShouldRemoveRemoveSingleElement(t *testing.T) {
-//	assert := assert.New(t)
-//	assert.That(Remove([]int{1, 2, 3, 4}, 0)).IsEqualTo([]int{2, 3, 4})
-//}
-//func TestShouldRemoveRemoveTwoElementsElement(t *testing.T) {
-//	assert := assert.New(t)
-//	assert.That(Remove([]int{1, 2, 3, 4}, 0, 1)).IsEqualTo([]int{3, 4})
-//}
-//func TestShouldRemoveRemoveTwoElementsInReverseOrderElement(t *testing.T) {
-//	assert := assert.New(t)
-//	assert.That(Remove([]int{1, 2, 3, 4}, 1, 0)).IsEqualTo([]int{3, 4})
-//}
+func TestShouldSeeBoardAsLoopButCountElementsOnlyOnce(t *testing.T) {
+	assert := assert.New(t)
+	_, board := EvaluateBoard([]int{1, PLUS_SIGN})
+	assert.That(board).IsEqualTo([]int{1, PLUS_SIGN})
+}
