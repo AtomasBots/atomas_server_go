@@ -1,6 +1,7 @@
 package atomas
 import (
 	"container/list"
+	"math"
 )
 
 const (
@@ -9,26 +10,45 @@ const (
 
 func EvaluateBoard(arrayBoard []int) (int, []int) {
 	score := 0
+	multiplier := 1
 	board := toList(arrayBoard)
 	for e := board.Front(); e != nil; e = e.Next() {
 		if e.Value == PLUS_SIGN {
-			if (isSurroundingSame(board, e)) {
-				score += nextWithLoop(board, e).Value.(int) * 2
-				e.Value = nextWithLoop(board, e).Value.(int) + 1
-				board = removeNeighbours(board, e)
+			score, multiplier, board = combineElements(board, e, multiplier)
+		}
+	}
+	return score * multiplier, toArray(board)
+}
+
+func combineElements(board *list.List, element *list.Element, multiplier int) (int, int, *list.List) {
+	score := 0
+	var newAccElement *list.Element = nil
+	if (isSurroundingSame(board, element)) {
+		score += nextWithLoop(board, element).Value.(int) * 2
+		element.Value = int(math.Max(float64(nextWithLoop(board, element).Value.(int)), float64(element.Value.(int)))) + 1
+		board, newAccElement = removeNeighbours(board, element)
+		if (size(board) > 2 ) {
+			partialScore := 0
+			partialScore, multiplier, board = combineElements(board, newAccElement, multiplier + 1)
+			score += partialScore
+		}
+	}
+	return score, multiplier, board
+}
+
+func removeNeighbours(board *list.List, element *list.Element) (*list.List, *list.Element) {
+	newBoard := list.New()
+	var newAccElement *list.Element = nil
+	for e := board.Front(); e != nil; e = e.Next() {
+		if (e != prevWithLoop(board, element) && e != nextWithLoop(board, element)) {
+			if (e == element) {
+				newAccElement = newBoard.PushBack(e.Value.(int))
+			}else {
+				newBoard.PushBack(e.Value.(int))
 			}
 		}
 	}
-	return score, toArray(board)
-}
-func removeNeighbours(board *list.List, element *list.Element) *list.List {
-	newBoard := list.New()
-	for e := board.Front(); e != nil; e = e.Next() {
-		if (e != prevWithLoop(board, element) && e != nextWithLoop(board, element)) {
-			newBoard.PushBack(e.Value.(int))
-		}
-	}
-	return newBoard
+	return newBoard, newAccElement
 }
 
 func nextWithLoop(board *list.List, element *list.Element) *list.Element {
@@ -76,3 +96,4 @@ func size(list *list.List) int {
 	}
 	return count
 }
+

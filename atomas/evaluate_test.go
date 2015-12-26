@@ -25,6 +25,13 @@ func TestShouldSumElementsCorrectly(t *testing.T) {
 	assert.That(board).IsEqualTo([]int{3})
 }
 
+func TestShouldSumElementsCorrectlyRecursively(t *testing.T) {
+	assert := assert.New(t)
+	score, board := EvaluateBoard([]int{1, 2, PLUS_SIGN, 2, 1 })
+	assert.That(score).IsEqualTo(12)
+	assert.That(board).IsEqualTo([]int{4})
+}
+
 func TestShouldLeaveElementsNotChangedInSumProcess(t *testing.T) {
 	assert := assert.New(t)
 	_, board := EvaluateBoard([]int{3, 2, 0, 2, 1})
