@@ -25,6 +25,13 @@ func TestShouldSumElementsCorrectly(t *testing.T) {
 	assert.That(board).IsEqualTo([]int{3})
 }
 
+func TestShouldSumElementsCorrectlyRecursively(t *testing.T) {
+	assert := assert.New(t)
+	score, board := EvaluateBoard([]int{1, 2, PLUS_SIGN, 2, 1 })
+	assert.That(score).IsEqualTo(12)
+	assert.That(board).IsEqualTo([]int{4})
+}
+
 func TestShouldLeaveElementsNotChangedInSumProcess(t *testing.T) {
 	assert := assert.New(t)
 	_, board := EvaluateBoard([]int{3, 2, 0, 2, 1})
@@ -49,15 +56,14 @@ func TestShouldSeeBoardAsLoop2(t *testing.T) {
 	assert.That(board).IsEqualTo([]int{2})
 }
 
-func TestShouldRemoveRemoveSingleElement(t *testing.T) {
+func TestShouldSeeBoardAsLoopButCountElementsOnlyOnce(t *testing.T) {
 	assert := assert.New(t)
-	assert.That(Remove([]int{1, 2, 3, 4}, 0)).IsEqualTo([]int{2, 3, 4})
+	_, board := EvaluateBoard([]int{1, PLUS_SIGN})
+	assert.That(board).IsEqualTo([]int{1, PLUS_SIGN})
 }
-func TestShouldRemoveRemoveTwoElementsElement(t *testing.T) {
+
+func TestShouldMergeElementsButLeftNonMatching(t *testing.T) {
 	assert := assert.New(t)
-	assert.That(Remove([]int{1, 2, 3, 4}, 0, 1)).IsEqualTo([]int{3, 4})
-}
-func TestShouldRemoveRemoveTwoElementsInReverseOrderElement(t *testing.T) {
-	assert := assert.New(t)
-	assert.That(Remove([]int{1, 2, 3, 4}, 1, 0)).IsEqualTo([]int{3, 4})
+	_, board := EvaluateBoard([]int{1, 2, 3, 4, PLUS_SIGN, 4, 3, 2})
+	assert.That(board).IsEqualTo([]int{1, 7})
 }
