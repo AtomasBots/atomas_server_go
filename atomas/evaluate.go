@@ -1,9 +1,13 @@
 package atomas
 
+const (
+	PLUS_SIGN  int = iota
+)
+
 func EvaluateBoard(board []int) (int, []int) {
 	score := 0
 	for index, element := range board {
-		if element == 0 {
+		if element == PLUS_SIGN {
 			if (isSurroundingSame(board, index)) {
 				score += board[(index + 1) % len(board)] * 2
 				board[index] = board[(index + 1) % len(board)] + 1

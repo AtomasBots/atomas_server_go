@@ -13,14 +13,14 @@ func TestShouldNotChangeBoardWithoutSpecialElements(t *testing.T) {
 
 func TestShouldChangeBoardWhenPlusIsSurroundedBySameElements(t *testing.T) {
 	assert := assert.New(t)
-	score, board := EvaluateBoard([]int{1, 0, 1})
+	score, board := EvaluateBoard([]int{1, PLUS_SIGN, 1})
 	assert.That(score).IsEqualTo(2)
 	assert.That(board).IsEqualTo([]int{2})
 }
 
 func TestShouldSumElementsCorrectly(t *testing.T) {
 	assert := assert.New(t)
-	score, board := EvaluateBoard([]int{2, 0, 2})
+	score, board := EvaluateBoard([]int{2, PLUS_SIGN, 2})
 	assert.That(score).IsEqualTo(4)
 	assert.That(board).IsEqualTo([]int{3})
 }
@@ -33,19 +33,19 @@ func TestShouldLeaveElementsNotChangedInSumProcess(t *testing.T) {
 
 func TestShouldNotChangeBoardWhenPlusIsSurroundedByDifferentElements(t *testing.T) {
 	assert := assert.New(t)
-	_, board := EvaluateBoard([]int{1, 0, 2})
-	assert.That(board).IsEqualTo([]int{1, 0, 2})
+	_, board := EvaluateBoard([]int{1, PLUS_SIGN, 2})
+	assert.That(board).IsEqualTo([]int{1, PLUS_SIGN, 2})
 }
 
 func TestShouldSeeBoardAsLoop(t *testing.T) {
 	assert := assert.New(t)
-	_, board := EvaluateBoard([]int{1, 1, 0})
+	_, board := EvaluateBoard([]int{1, 1, PLUS_SIGN})
 	assert.That(board).IsEqualTo([]int{2})
 }
 
 func TestShouldSeeBoardAsLoop2(t *testing.T) {
 	assert := assert.New(t)
-	_, board := EvaluateBoard([]int{0, 1, 1})
+	_, board := EvaluateBoard([]int{PLUS_SIGN, 1, 1})
 	assert.That(board).IsEqualTo([]int{2})
 }
 
