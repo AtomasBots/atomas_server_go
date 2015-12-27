@@ -26,8 +26,8 @@ func main() {
 	http.HandleFunc("/new_game", atomas.CreateCreateGameHandler(games, nextUUID, elementGenerator))
 	http.HandleFunc("/game/", atomas.CreateGetGameHandler(games))
 	http.HandleFunc("/move/", atomas.CreateMoveHandler(games, elementGenerator))
-	http.HandleFunc("/highscore", atomas.CreateHighScoreHandler(games))
 	http.HandleFunc("/version", atomas.CreateVersionHandler(version))
+	http.HandleFunc("/highscore", atomas.CreateHighScoreHandler(games))
 	port := os.Args[1]
 	log.Fatal(http.ListenAndServe(port, nil))
 }
