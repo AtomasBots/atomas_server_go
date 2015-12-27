@@ -17,6 +17,8 @@ func nextUUID() string {
 	return uuid.String()
 }
 
+var version string
+
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 	games := map[string]atomas.GameDTO{}
@@ -25,6 +27,7 @@ func main() {
 	http.HandleFunc("/game/", atomas.CreateGetGameHandler(games))
 	http.HandleFunc("/move/", atomas.CreateMoveHandler(games, elementGenerator))
 	http.HandleFunc("/highscore", atomas.CreateHighScoreHandler(games))
+	http.HandleFunc("/version", atomas.CreateVersionHandler(version))
 	port := os.Args[1]
 	log.Fatal(http.ListenAndServe(port, nil))
 }
