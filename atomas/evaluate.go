@@ -12,32 +12,49 @@ func EvaluateBoard(arrayBoard []int) (int, []int) {
 	score := 0
 	multiplier := 1
 	board := toList(arrayBoard)
-	for e := board.Front(); e != nil; e = e.Next() {
-		if e.Value == PLUS_SIGN {
-			score, multiplier, board = combineElements(board, e, multiplier)
-		}
-	}
+	score, multiplier, board = lookForPossibleCombinations(board, multiplier)
 	return score * multiplier, toArray(board)
 }
 
-func combineElements(board *list.List, element *list.Element, multiplier int) (int, int, *list.List) {
+func lookForPossibleCombinations(board *list.List, multiplier int) (int, int, *list.List) {
 	score := 0
-	var newAccElement *list.Element = nil
-	if (shouldMergeElements(board, element)) {
-		score += nextWithLoop(board, element).Value.(int) * 2
-		element.Value = int(math.Max(float64(nextWithLoop(board, element).Value.(int)), float64(element.Value.(int)))) + 1
-		board, newAccElement = removeNeighbours(board, element)
-		if (size(board) > 2 ) {
-			partialScore := 0
-			partialScore, multiplier, board = combineElements(board, newAccElement, multiplier + 1)
-			score += partialScore
+	for e := board.Front(); e != nil; e = e.Next() {
+		if e.Value == PLUS_SIGN && shouldMergeElements(board, e) {
+			score, multiplier, board = combineElements(board, e, multiplier)
 		}
 	}
 	return score, multiplier, board
 }
 
+func combineElements(board *list.List, element *list.Element, multiplier int) (int, int, *list.List) {
+	score := 0
+	var newAccElement *list.Element = nil
+	score += nextWithLoop(board, element).Value.(int) * 2
+	element.Value = int(math.Max(float64(nextWithLoop(board, element).Value.(int)), float64(element.Value.(int)))) + 1
+	board, newAccElement = removeNeighbours(board, element)
+	if (shouldMergeElements(board, newAccElement)) {
+		partialScore := 0
+		partialScore, multiplier, board = combineElements(board, newAccElement, multiplier + 1)
+		score += partialScore
+	} else if (aNewMergeEmerged(board)) {
+		partialScore := 0
+		partialScore, multiplier, board = lookForPossibleCombinations(board, multiplier + 1)
+		score += partialScore
+	}
+	return score, multiplier, board
+}
+
 func shouldMergeElements(board *list.List, element *list.Element) bool {
-	return size(board) > 2 && isSurroundingSame(board, element) && theyAreNotPluses(board, element)
+	return (size(board) > 2 && isSurroundingSame(board, element) && theyAreNotPluses(board, element))
+}
+
+func aNewMergeEmerged(board *list.List) bool {
+	for e := board.Front(); e != nil; e = e.Next() {
+		if e.Value == PLUS_SIGN && shouldMergeElements(board, e) {
+			return true
+		}
+	}
+	return false
 }
 
 func theyAreNotPluses(board *list.List, element *list.Element) bool {

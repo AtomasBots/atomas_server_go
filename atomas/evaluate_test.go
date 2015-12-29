@@ -73,3 +73,9 @@ func TestShouldNotMergePlusElements(t *testing.T) {
 	_, board := EvaluateBoard([]int{4, PLUS_SIGN, PLUS_SIGN, PLUS_SIGN, 4})
 	assert.That(board).IsEqualTo([]int{4, PLUS_SIGN, PLUS_SIGN, PLUS_SIGN, 4})
 }
+
+func TestShouldMergeElementsRecursivelyUsingOtherPluses(t*testing.T) {
+	assert := assert.New(t)
+	_, board := EvaluateBoard([]int{PLUS_SIGN, 1, PLUS_SIGN, 1, 4, 3, 2, 2})
+	assert.That(board).IsEqualTo([]int{3, 4, 3, 2})
+}
