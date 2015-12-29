@@ -67,3 +67,9 @@ func TestShouldMergeElementsButLeftNonMatching(t *testing.T) {
 	_, board := EvaluateBoard([]int{1, 2, 3, 4, PLUS_SIGN, 4, 3, 2})
 	assert.That(board).IsEqualTo([]int{1, 7})
 }
+
+func TestShouldNotMergePlusElements(t *testing.T) {
+	assert := assert.New(t)
+	_, board := EvaluateBoard([]int{4, PLUS_SIGN, PLUS_SIGN, PLUS_SIGN, 4})
+	assert.That(board).IsEqualTo([]int{4, PLUS_SIGN, PLUS_SIGN, PLUS_SIGN, 4})
+}
