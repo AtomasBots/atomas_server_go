@@ -8,7 +8,7 @@ const (
 )
 
 func EvaluateBoard(arrayBoard []int) (int, []int) {
-	score, multiplier, board := lookForPossibleCombinations(toList(arrayBoard), 1, 0)
+	score, multiplier, board := lookForPossibleCombinations(toList(arrayBoard), 0, 0)
 	return score * multiplier, toArray(board)
 }
 
@@ -17,7 +17,7 @@ func lookForPossibleCombinations(board *list.List, multiplier int, score int) (i
 	if (mergablePlusSign == nil) {
 		return score, multiplier, board
 	}else {
-		return applyPlusSign(board, mergablePlusSign, multiplier, score)
+		return applyPlusSign(board, mergablePlusSign, multiplier + 1, score)
 	}
 }
 
