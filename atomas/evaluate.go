@@ -11,35 +11,32 @@ func EvaluateBoard(arrayBoard []int) (int, []int) {
 	score := 0
 	multiplier := 1
 	board := toList(arrayBoard)
-	score, multiplier, board = lookForPossibleCombinations(board, multiplier)
+	score, multiplier, board = lookForPossibleCombinations(board, multiplier, 0)
 	return score * multiplier, toArray(board)
 }
 
-func lookForPossibleCombinations(board *list.List, multiplier int) (int, int, *list.List) {
-	score := 0
+func lookForPossibleCombinations(board *list.List, multiplier int, score int) (int, int, *list.List) {
 	for e := board.Front(); e != nil; e = e.Next() {
 		if e.Value == PLUS_SIGN && shouldMergeElements(board, e) {
-			score, multiplier, board = combineElements(board, e, multiplier)
+			score, multiplier, board = combineElements(board, e, multiplier, score)
 		}
 	}
 	return score, multiplier, board
 }
 
-func combineElements(board *list.List, element *list.Element, multiplier int) (int, int, *list.List) {
+func combineElements(board *list.List, element *list.Element, multiplier int, score int) (int, int, *list.List) {
 	next := nextWithLoop(board, element)
 	prev := prevWithLoop(board, element)
 	surroundingValue := next.Value.(int)
-	score := surroundingValue * 2
+	score += surroundingValue * 2
 	element.Value = Max(surroundingValue, element.Value.(int)) + 1
 	board.Remove(prev)
 	board.Remove(next)
 	if (shouldMergeElements(board, element)) {
-		partialScore, multiplier, board := combineElements(board, element, multiplier + 1)
-		return partialScore + score, multiplier, board
+		return combineElements(board, element, multiplier + 1, score)
 	} else if (aNewMergeEmerged(board)) {
-		partialScore, multiplier, board := lookForPossibleCombinations(board, multiplier + 1)
-		return partialScore + score, multiplier, board
-	}else{
+		return lookForPossibleCombinations(board, multiplier + 1, score)
+	}else {
 		return score, multiplier, board
 	}
 }
