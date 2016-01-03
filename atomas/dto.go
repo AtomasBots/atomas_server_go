@@ -9,3 +9,8 @@ type GameDTO struct {
 	Round int `json:"round"`
 	Score int `json:"score"`
 }
+
+type ServerResponse struct {
+	Response string
+	Code     int
+}
