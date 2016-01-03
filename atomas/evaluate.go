@@ -1,7 +1,6 @@
 package atomas
 import (
 	"container/list"
-	"math"
 )
 
 const (
@@ -30,7 +29,7 @@ func combineElements(board *list.List, element *list.Element, multiplier int) (i
 	score := 0
 	var newAccElement *list.Element = nil
 	score += nextWithLoop(board, element).Value.(int) * 2
-	element.Value = int(math.Max(float64(nextWithLoop(board, element).Value.(int)), float64(element.Value.(int)))) + 1
+	element.Value = Max(nextWithLoop(board, element).Value.(int), element.Value.(int)) + 1
 	board, newAccElement = removeNeighbours(board, element)
 	if (shouldMergeElements(board, newAccElement)) {
 		partialScore := 0
