@@ -59,7 +59,7 @@ func extractMoveTo(r *http.Request, game GameDTO) (int, *ServerResponse) {
 }
 
 func Move(game GameDTO, moveTo int, next int) GameDTO {
-	newBoard := append(game.Board[:moveTo], append([]int{game.Next}, game.Board[moveTo:]...)...)
+	newBoard := Insert(game.Board, game.Next, moveTo)
 	scoreForMove, newBoard := EvaluateBoard(newBoard)
 	if (len(newBoard) > 18) {
 		next = END_OF_GAME
