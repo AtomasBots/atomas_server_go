@@ -26,20 +26,22 @@ func lookForPossibleCombinations(board *list.List, multiplier int) (int, int, *l
 }
 
 func combineElements(board *list.List, element *list.Element, multiplier int) (int, int, *list.List) {
-	score := 0
-	score += nextWithLoop(board, element).Value.(int) * 2
-	element.Value = Max(nextWithLoop(board, element).Value.(int), element.Value.(int)) + 1
-	board, newAccElement := removeNeighbours(board, element)
-	if (shouldMergeElements(board, newAccElement)) {
-		partialScore := 0
-		partialScore, multiplier, board = combineElements(board, newAccElement, multiplier + 1)
-		score += partialScore
+	next := nextWithLoop(board, element)
+	prev := prevWithLoop(board, element)
+	surroundingValue := next.Value.(int)
+	score := surroundingValue * 2
+	element.Value = Max(surroundingValue, element.Value.(int)) + 1
+	board.Remove(prev)
+	board.Remove(next)
+	if (shouldMergeElements(board, element)) {
+		partialScore, multiplier, board := combineElements(board, element, multiplier + 1)
+		return partialScore + score, multiplier, board
 	} else if (aNewMergeEmerged(board)) {
-		partialScore := 0
-		partialScore, multiplier, board = lookForPossibleCombinations(board, multiplier + 1)
-		score += partialScore
+		partialScore, multiplier, board := lookForPossibleCombinations(board, multiplier + 1)
+		return partialScore + score, multiplier, board
+	}else{
+		return score, multiplier, board
 	}
-	return score, multiplier, board
 }
 
 func shouldMergeElements(board *list.List, element *list.Element) bool {
@@ -57,21 +59,6 @@ func aNewMergeEmerged(board *list.List) bool {
 
 func theyAreNotPluses(board *list.List, element *list.Element) bool {
 	return nextWithLoop(board, element).Value != PLUS_SIGN
-}
-
-func removeNeighbours(board *list.List, element *list.Element) (*list.List, *list.Element) {
-	newBoard := list.New()
-	var newAccElement *list.Element = nil
-	for e := board.Front(); e != nil; e = e.Next() {
-		if (e != prevWithLoop(board, element) && e != nextWithLoop(board, element)) {
-			if (e == element) {
-				newAccElement = newBoard.PushBack(e.Value.(int))
-			}else {
-				newBoard.PushBack(e.Value.(int))
-			}
-		}
-	}
-	return newBoard, newAccElement
 }
 
 func nextWithLoop(board *list.List, element *list.Element) *list.Element {
