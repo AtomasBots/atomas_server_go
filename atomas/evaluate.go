@@ -45,7 +45,7 @@ func combineElements(board *list.List, element *list.Element, multiplier int) (i
 }
 
 func shouldMergeElements(board *list.List, element *list.Element) bool {
-	return (size(board) > 2 && isSurroundingSame(board, element) && theyAreNotPluses(board, element))
+	return (board.Len() > 2 && isSurroundingSame(board, element) && theyAreNotPluses(board, element))
 }
 
 func aNewMergeEmerged(board *list.List) bool {
@@ -105,7 +105,7 @@ func toList(board []int) *list.List {
 }
 
 func toArray(board *list.List) []int {
-	array := make([]int, size(board))
+	array := make([]int, board.Len())
 	i := 0
 	for e := board.Front(); e != nil; e = e.Next() {
 		array[i] = e.Value.(int)
@@ -113,12 +113,3 @@ func toArray(board *list.List) []int {
 	}
 	return array
 }
-
-func size(list *list.List) int {
-	count := 0
-	for e := list.Front(); e != nil; e = e.Next() {
-		count += 1
-	}
-	return count
-}
-
