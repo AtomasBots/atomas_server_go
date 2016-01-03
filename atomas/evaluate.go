@@ -4,14 +4,11 @@ import (
 )
 
 const (
-	PLUS_SIGN  int = iota
+	PLUS_SIGN  int = 0
 )
 
 func EvaluateBoard(arrayBoard []int) (int, []int) {
-	score := 0
-	multiplier := 1
-	board := toList(arrayBoard)
-	score, multiplier, board = lookForPossibleCombinations(board, multiplier, 0)
+	score, multiplier, board := lookForPossibleCombinations(toList(arrayBoard), 1, 0)
 	return score * multiplier, toArray(board)
 }
 
@@ -42,7 +39,7 @@ func combineElements(board *list.List, element *list.Element, multiplier int, sc
 }
 
 func shouldMergeElements(board *list.List, element *list.Element) bool {
-	return (board.Len() > 2 && isSurroundingSame(board, element) && theyAreNotPluses(board, element))
+	return (board.Len() > 2 && isSurroundingSame(board, element) && theyAreProperElement(board, element))
 }
 
 func aNewMergeEmerged(board *list.List) bool {
@@ -54,8 +51,8 @@ func aNewMergeEmerged(board *list.List) bool {
 	return false
 }
 
-func theyAreNotPluses(board *list.List, element *list.Element) bool {
-	return nextWithLoop(board, element).Value != PLUS_SIGN
+func theyAreProperElement(board *list.List, element *list.Element) bool {
+	return nextWithLoop(board, element).Value.(int) > 0
 }
 
 func nextWithLoop(board *list.List, element *list.Element) *list.Element {
