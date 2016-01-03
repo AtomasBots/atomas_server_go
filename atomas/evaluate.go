@@ -27,10 +27,9 @@ func lookForPossibleCombinations(board *list.List, multiplier int) (int, int, *l
 
 func combineElements(board *list.List, element *list.Element, multiplier int) (int, int, *list.List) {
 	score := 0
-	var newAccElement *list.Element = nil
 	score += nextWithLoop(board, element).Value.(int) * 2
 	element.Value = Max(nextWithLoop(board, element).Value.(int), element.Value.(int)) + 1
-	board, newAccElement = removeNeighbours(board, element)
+	board, newAccElement := removeNeighbours(board, element)
 	if (shouldMergeElements(board, newAccElement)) {
 		partialScore := 0
 		partialScore, multiplier, board = combineElements(board, newAccElement, multiplier + 1)
