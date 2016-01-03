@@ -22,20 +22,22 @@ func lookForPossibleCombinations(board *list.List, multiplier int, score int) (i
 }
 
 func applyPlusSign(board *list.List, element *list.Element, multiplier int, score int) (int, int, *list.List) {
+	score, board = mergeElementsAround(board, element, score)
+	if (shouldMergeElements(board, element)) {
+		return applyPlusSign(board, element, multiplier + 1, score)
+	}else {
+		return lookForPossibleCombinations(board, multiplier, score)
+	}
+}
+
+func mergeElementsAround(board *list.List, element *list.Element, score int) (int, *list.List) {
 	next := nextWithLoop(board, element)
 	prev := prevWithLoop(board, element)
 	surroundingValue := next.Value.(int)
-	score += surroundingValue * 2
 	element.Value = Max(surroundingValue, element.Value.(int)) + 1
 	board.Remove(prev)
 	board.Remove(next)
-	if (shouldMergeElements(board, element)) {
-		return applyPlusSign(board, element, multiplier + 1, score)
-	} else if mergablePlusSign := findMergablePlusSign(board); mergablePlusSign != nil {
-		return applyPlusSign(board, mergablePlusSign, multiplier + 1, score)
-	}else {
-		return score, multiplier, board
-	}
+	return score + surroundingValue * 2, board
 }
 
 func shouldMergeElements(board *list.List, element *list.Element) bool {
