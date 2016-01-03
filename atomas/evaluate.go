@@ -31,8 +31,8 @@ func applyPlusSign(board *list.List, element *list.Element, multiplier int, scor
 	board.Remove(next)
 	if (shouldMergeElements(board, element)) {
 		return applyPlusSign(board, element, multiplier + 1, score)
-	} else if (findMergablePlusSign(board) != nil) {
-		return lookForPossibleCombinations(board, multiplier + 1, score)
+	} else if mergablePlusSign := findMergablePlusSign(board); mergablePlusSign != nil {
+		return applyPlusSign(board, mergablePlusSign, multiplier + 1, score)
 	}else {
 		return score, multiplier, board
 	}
