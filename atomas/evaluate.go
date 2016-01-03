@@ -40,23 +40,6 @@ func mergeElementsAround(board *list.List, element *list.Element, score int) (in
 	return score + surroundingValue * 2, board
 }
 
-func shouldMergeElements(board *list.List, element *list.Element) bool {
-	return (board.Len() > 2 && isSurroundingSame(board, element) && theyAreProperElement(board, element))
-}
-
-func findMergablePlusSign(board *list.List) *list.Element {
-	for e := board.Front(); e != nil; e = e.Next() {
-		if e.Value == PLUS_SIGN && shouldMergeElements(board, e) {
-			return e
-		}
-	}
-	return nil
-}
-
-func theyAreProperElement(board *list.List, element *list.Element) bool {
-	return nextWithLoop(board, element).Value.(int) > 0
-}
-
 func nextWithLoop(board *list.List, element *list.Element) *list.Element {
 	if (element.Next() != nil ) {
 		return element.Next()
@@ -65,16 +48,38 @@ func nextWithLoop(board *list.List, element *list.Element) *list.Element {
 	}
 }
 
+func findMergablePlusSign(board *list.List) *list.Element {
+	for e := board.Front(); e != nil; e = e.Next() {
+		if isMergablePlusSign(board, e) {
+			return e
+		}
+	}
+	return nil
+}
+
+func isMergablePlusSign(board *list.List, e *list.Element) bool {
+	return e.Value == PLUS_SIGN && shouldMergeElements(board, e)
+}
+
+func shouldMergeElements(board *list.List, element *list.Element) bool {
+	if (board.Len() < 3) {
+		return false
+	}
+	next := nextWithLoop(board, element).Value
+	prev := prevWithLoop(board, element).Value
+	return areSameAndValid(next, prev)
+}
+
+func areSameAndValid(next interface{}, prev interface{}) bool {
+	return next == prev && next.(int) > 0
+}
+
 func prevWithLoop(board *list.List, element *list.Element) *list.Element {
 	if (element.Prev() != nil ) {
 		return element.Prev()
 	}else {
 		return board.Back()
 	}
-}
-
-func isSurroundingSame(board *list.List, element *list.Element) bool {
-	return nextWithLoop(board, element).Value == prevWithLoop(board, element).Value
 }
 
 func toList(board []int) *list.List {
