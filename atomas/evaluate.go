@@ -13,15 +13,15 @@ func EvaluateBoard(arrayBoard []int) (int, []int) {
 }
 
 func lookForPossibleCombinations(board *list.List, multiplier int, score int) (int, int, *list.List) {
-	for e := board.Front(); e != nil; e = e.Next() {
-		if e.Value == PLUS_SIGN && shouldMergeElements(board, e) {
-			score, multiplier, board = combineElements(board, e, multiplier, score)
-		}
+	mergablePlusSign := findMergablePlusSign(board)
+	if (mergablePlusSign == nil) {
+		return score, multiplier, board
+	}else {
+		return applyPlusSign(board, mergablePlusSign, multiplier, score)
 	}
-	return score, multiplier, board
 }
 
-func combineElements(board *list.List, element *list.Element, multiplier int, score int) (int, int, *list.List) {
+func applyPlusSign(board *list.List, element *list.Element, multiplier int, score int) (int, int, *list.List) {
 	next := nextWithLoop(board, element)
 	prev := prevWithLoop(board, element)
 	surroundingValue := next.Value.(int)
@@ -30,8 +30,8 @@ func combineElements(board *list.List, element *list.Element, multiplier int, sc
 	board.Remove(prev)
 	board.Remove(next)
 	if (shouldMergeElements(board, element)) {
-		return combineElements(board, element, multiplier + 1, score)
-	} else if (aNewMergeEmerged(board)) {
+		return applyPlusSign(board, element, multiplier + 1, score)
+	} else if (findMergablePlusSign(board) != nil) {
 		return lookForPossibleCombinations(board, multiplier + 1, score)
 	}else {
 		return score, multiplier, board
@@ -42,13 +42,13 @@ func shouldMergeElements(board *list.List, element *list.Element) bool {
 	return (board.Len() > 2 && isSurroundingSame(board, element) && theyAreProperElement(board, element))
 }
 
-func aNewMergeEmerged(board *list.List) bool {
+func findMergablePlusSign(board *list.List) *list.Element {
 	for e := board.Front(); e != nil; e = e.Next() {
 		if e.Value == PLUS_SIGN && shouldMergeElements(board, e) {
-			return true
+			return e
 		}
 	}
-	return false
+	return nil
 }
 
 func theyAreProperElement(board *list.List, element *list.Element) bool {
