@@ -4,74 +4,40 @@ import (
 )
 
 const (
-	PLUS_SIGN  int = iota
+	PLUS_SIGN  int = 0
 )
 
 func EvaluateBoard(arrayBoard []int) (int, []int) {
-	score := 0
-	multiplier := 1
-	board := toList(arrayBoard)
-	score, multiplier, board = lookForPossibleCombinations(board, multiplier)
+	score, multiplier, board := lookForPossibleCombinations(toList(arrayBoard), 0, 0)
 	return score * multiplier, toArray(board)
 }
 
-func lookForPossibleCombinations(board *list.List, multiplier int) (int, int, *list.List) {
-	score := 0
-	for e := board.Front(); e != nil; e = e.Next() {
-		if e.Value == PLUS_SIGN && shouldMergeElements(board, e) {
-			score, multiplier, board = combineElements(board, e, multiplier)
-		}
+func lookForPossibleCombinations(board *list.List, multiplier int, score int) (int, int, *list.List) {
+	mergablePlusSign := findMergablePlusSign(board)
+	if (mergablePlusSign == nil) {
+		return score, multiplier, board
+	}else {
+		return applyPlusSign(board, mergablePlusSign, multiplier + 1, score)
 	}
-	return score, multiplier, board
 }
 
-func combineElements(board *list.List, element *list.Element, multiplier int) (int, int, *list.List) {
-	score := 0
-	score += nextWithLoop(board, element).Value.(int) * 2
-	element.Value = Max(nextWithLoop(board, element).Value.(int), element.Value.(int)) + 1
-	board, newAccElement := removeNeighbours(board, element)
-	if (shouldMergeElements(board, newAccElement)) {
-		partialScore := 0
-		partialScore, multiplier, board = combineElements(board, newAccElement, multiplier + 1)
-		score += partialScore
-	} else if (aNewMergeEmerged(board)) {
-		partialScore := 0
-		partialScore, multiplier, board = lookForPossibleCombinations(board, multiplier + 1)
-		score += partialScore
+func applyPlusSign(board *list.List, element *list.Element, multiplier int, score int) (int, int, *list.List) {
+	score, board = mergeElementsAround(board, element, score)
+	if (shouldMergeElements(board, element)) {
+		return applyPlusSign(board, element, multiplier + 1, score)
+	}else {
+		return lookForPossibleCombinations(board, multiplier, score)
 	}
-	return score, multiplier, board
 }
 
-func shouldMergeElements(board *list.List, element *list.Element) bool {
-	return (board.Len() > 2 && isSurroundingSame(board, element) && theyAreNotPluses(board, element))
-}
-
-func aNewMergeEmerged(board *list.List) bool {
-	for e := board.Front(); e != nil; e = e.Next() {
-		if e.Value == PLUS_SIGN && shouldMergeElements(board, e) {
-			return true
-		}
-	}
-	return false
-}
-
-func theyAreNotPluses(board *list.List, element *list.Element) bool {
-	return nextWithLoop(board, element).Value != PLUS_SIGN
-}
-
-func removeNeighbours(board *list.List, element *list.Element) (*list.List, *list.Element) {
-	newBoard := list.New()
-	var newAccElement *list.Element = nil
-	for e := board.Front(); e != nil; e = e.Next() {
-		if (e != prevWithLoop(board, element) && e != nextWithLoop(board, element)) {
-			if (e == element) {
-				newAccElement = newBoard.PushBack(e.Value.(int))
-			}else {
-				newBoard.PushBack(e.Value.(int))
-			}
-		}
-	}
-	return newBoard, newAccElement
+func mergeElementsAround(board *list.List, element *list.Element, score int) (int, *list.List) {
+	next := nextWithLoop(board, element)
+	prev := prevWithLoop(board, element)
+	surroundingValue := next.Value.(int)
+	element.Value = Max(surroundingValue, element.Value.(int)) + 1
+	board.Remove(prev)
+	board.Remove(next)
+	return score + surroundingValue * 2, board
 }
 
 func nextWithLoop(board *list.List, element *list.Element) *list.Element {
@@ -82,16 +48,38 @@ func nextWithLoop(board *list.List, element *list.Element) *list.Element {
 	}
 }
 
+func findMergablePlusSign(board *list.List) *list.Element {
+	for e := board.Front(); e != nil; e = e.Next() {
+		if isMergablePlusSign(board, e) {
+			return e
+		}
+	}
+	return nil
+}
+
+func isMergablePlusSign(board *list.List, e *list.Element) bool {
+	return e.Value == PLUS_SIGN && shouldMergeElements(board, e)
+}
+
+func shouldMergeElements(board *list.List, element *list.Element) bool {
+	if (board.Len() < 3) {
+		return false
+	}
+	next := nextWithLoop(board, element).Value
+	prev := prevWithLoop(board, element).Value
+	return areSameAndValid(next, prev)
+}
+
+func areSameAndValid(next interface{}, prev interface{}) bool {
+	return next == prev && next.(int) > 0
+}
+
 func prevWithLoop(board *list.List, element *list.Element) *list.Element {
 	if (element.Prev() != nil ) {
 		return element.Prev()
 	}else {
 		return board.Back()
 	}
-}
-
-func isSurroundingSame(board *list.List, element *list.Element) bool {
-	return nextWithLoop(board, element).Value == prevWithLoop(board, element).Value
 }
 
 func toList(board []int) *list.List {
