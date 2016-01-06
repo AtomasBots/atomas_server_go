@@ -51,10 +51,18 @@ func TestMoveShouldReturnGameOverException(t *testing.T) {
 	assert.That(recorder.Body.String()).IsEqualTo("Game over")
 }
 
+func TestMoveShouldKeepName(t *testing.T) {
+	assert := assert.New(t)
+	games := initialGames()
+	CreateMoveHandler(games, nonRandomElement)(httptest.NewRecorder(), moveRequest("uuid", "0"))
+	assert.That(games["uuid"].Name).IsEqualTo("name")
+}
+
 func initialGames() map[string]GameDTO {
 	return map[string]GameDTO{
 		"uuid" : GameDTO{
 			Id:"uuid",
+			Name:"name",
 			Board:[]int{1, 2, 3, 4},
 			Next: 5,
 			Round:0,

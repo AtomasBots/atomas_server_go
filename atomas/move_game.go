@@ -66,6 +66,7 @@ func Move(game GameDTO, moveTo int, next int) GameDTO {
 	}
 	return GameDTO{
 		Id:game.Id,
+		Name: game.Name,
 		Ip:game.Ip,
 		Board:newBoard,
 		Next:next,
