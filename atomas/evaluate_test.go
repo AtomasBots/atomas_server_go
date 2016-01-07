@@ -79,3 +79,9 @@ func TestShouldMergeElementsRecursivelyUsingOtherPluses(t*testing.T) {
 	_, board := EvaluateBoard([]int{PLUS_SIGN, 1, PLUS_SIGN, 1, 4, 3, 2, 2})
 	assert.That(board).IsEqualTo([]int{3, 4, 3, 2})
 }
+
+func TestShouldMergeFirstOfMultiPossibleMerges(t*testing.T) {
+	assert := assert.New(t)
+	_, board := EvaluateBoard([]int{3, PLUS_SIGN, 3, PLUS_SIGN, 3, 5, 4})
+	assert.That(board).IsEqualTo([]int{4, PLUS_SIGN, 3, 5, 4})
+}
