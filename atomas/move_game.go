@@ -8,7 +8,7 @@ import (
 
 const END_OF_GAME = -1000
 
-func CreateMoveHandler(games map[string]GameDTO, randomElement func(int) int) func(http.ResponseWriter, *http.Request) {
+func CreateMoveHandler(games map[string]GameDTO, randomElement func([]int) int) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		response := handleMove(r, games, randomElement)
 		w.WriteHeader(response.Code)
@@ -16,7 +16,7 @@ func CreateMoveHandler(games map[string]GameDTO, randomElement func(int) int) fu
 	}
 }
 
-func handleMove(r *http.Request, games map[string]GameDTO, randomElement func(int) int) *ServerResponse {
+func handleMove(r *http.Request, games map[string]GameDTO, randomElement func([]int) int) *ServerResponse {
 	game, err := findGame(r, games)
 	if (err != nil) {
 		return err
@@ -28,7 +28,7 @@ func handleMove(r *http.Request, games map[string]GameDTO, randomElement func(in
 	if (game.Next == END_OF_GAME) {
 		return &ServerResponse{"Game over", http.StatusBadRequest }
 	} else {
-		afterMove := Move(*game, moveTo, randomElement(game.Round))
+		afterMove := Move(*game, moveTo, randomElement(game.PreviousElements))
 		games[game.Id] = afterMove
 		return &ServerResponse{ToJsonString(afterMove), http.StatusOK }
 	}

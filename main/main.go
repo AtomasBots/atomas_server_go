@@ -23,9 +23,10 @@ func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 	games := map[string]atomas.GameDTO{}
 	elementGenerator := atomas.CreateElementGenerator(rand.Int)
+	elementGeneratorArray := atomas.CreateElementGeneratorArray(rand.Int)
 	http.HandleFunc("/new_game", atomas.CreateCreateGameHandler(games, nextUUID, elementGenerator))
 	http.HandleFunc("/game/", atomas.CreateGetGameHandler(games))
-	http.HandleFunc("/move/", atomas.CreateMoveHandler(games, elementGenerator))
+	http.HandleFunc("/move/", atomas.CreateMoveHandler(games, elementGeneratorArray))
 	http.HandleFunc("/version", atomas.CreateVersionHandler(version))
 	http.HandleFunc("/highscore", atomas.CreateHighScoreHandler(games))
 	port := os.Args[1]
