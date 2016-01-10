@@ -64,13 +64,5 @@ func Move(game GameDTO, moveTo int, next int) GameDTO {
 	if (len(newBoard) > 18) {
 		next = END_OF_GAME
 	}
-	return GameDTO{
-		Id:game.Id,
-		Name: game.Name,
-		Ip:game.Ip,
-		Board:newBoard,
-		Next:next,
-		Round:game.Round + 1,
-		Score:game.Score + scoreForMove,
-	}
+	return game.NextBoard(newBoard,next,scoreForMove)
 }
